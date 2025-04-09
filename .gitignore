@@ -1,1 +1,3 @@
-/myenv
+myenv/
+poetry.lock
+pyproject.toml
