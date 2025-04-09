@@ -12,17 +12,15 @@ def passcard_info_view(request, passcode):
     duration_session = []
     is_strange = []
     obj = get_object_or_404(Passcard, passcode=passcode)
-    passcard = Visit.objects.filter(passcard=obj)
-    for visit in passcard:
-        duration = get_duration(visit)
-        session_duration = format_duration(duration)
-        time = str(visit.entered_at)
-        strange = is_visit_long(visit, minutes=60)
-        entry_times.append(time)
-        duration_session.append(session_duration)
-        is_strange.append(strange)
-
-    this_passcard_visits = [{'entered_at': a, 'duration': b, 'is_strange': c } for a, b, c in zip(entry_times, duration_session, is_strange)]
+    visits = Visit.objects.filter(passcard=obj)
+    this_passcard_visits = [
+        {
+            'entered_at': str(visit.entered_at),
+            'duration': format_duration(get_duration(visit)),
+            'is_strange': is_visit_long(visit, minutes=60)
+        }
+        for visit in visits
+    ]
     context = {
         'passcard': obj,
         'this_passcard_visits': this_passcard_visits
